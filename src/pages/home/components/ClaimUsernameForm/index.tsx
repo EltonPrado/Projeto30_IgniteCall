@@ -4,6 +4,7 @@ import { ArrowArcRight } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/router'
 
 const claimUsernameFormSchema = z.object({
   username: z
@@ -12,22 +13,26 @@ const claimUsernameFormSchema = z.object({
     .regex(/^([a-z\\-]+)$/i, {
       message: 'O usuário pode ter apenas letras e hifens.',
     })
-    .transform((username) => username.toLocaleLowerCase),
+    .transform((username) => username.toLowerCase()),
 })
 
-type claimUsernameFormData = z.infer<typeof claimUsernameFormSchema>
+type ClaimUsernameFormData = z.infer<typeof claimUsernameFormSchema>
 
 export function ClaimUsernameForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<claimUsernameFormData>({
+    formState: { errors, isSubmitting },
+  } = useForm<ClaimUsernameFormData>({
     resolver: zodResolver(claimUsernameFormSchema),
   })
 
-  async function handleClaimUsername(data: claimUsernameFormData) {
-    console.log(data)
+  const router = useRouter()
+
+  async function handleClaimUsername(data: ClaimUsernameFormData) {
+    const { username } = data
+
+    await router.push(`/register?username=${username}`)
   }
 
   return (
@@ -39,7 +44,7 @@ export function ClaimUsernameForm() {
           placeholder="seu-usuário"
           {...register('username')}
         />
-        <Button size="sm" type="submit">
+        <Button size="sm" type="submit" disabled={isSubmitting}>
           Reservar
           <ArrowArcRight />
         </Button>
