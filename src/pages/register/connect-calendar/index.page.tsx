@@ -3,8 +3,11 @@ import { Container, Header } from '../styles'
 import { ArrowArcRight, ArrowRight } from 'phosphor-react'
 // import { api } from '../../lib/axios'
 import { ConnectBox, ConnectItem } from './styles'
+import { signIn } from 'next-auth/react'
 
 export default function Register() {
+  // const session = useSession()
+
   // async function handleRegister() {}
 
   return (
@@ -23,7 +26,11 @@ export default function Register() {
         <ConnectItem>
           <Text>Google Calendar</Text>
 
-          <Button variant="secondary" size="sm">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => signIn('google')}
+          >
             Conectar
             <ArrowRight />
           </Button>
