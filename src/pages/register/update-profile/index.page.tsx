@@ -1,4 +1,11 @@
-import { Button, Heading, MultiStep, Text, TextArea } from '@ignite-ui/react'
+import {
+  Avatar,
+  Button,
+  Heading,
+  MultiStep,
+  Text,
+  TextArea,
+} from '@ignite-ui/react'
 import { Container, Header } from '../styles'
 import { ArrowArcRight } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
@@ -9,6 +16,8 @@ import { useSession } from 'next-auth/react'
 import { GetServerSideProps } from 'next'
 import { buildNextAuthOptions } from '@/pages/api/auth/[...nextauth].api'
 import { getServerSession } from 'next-auth'
+import { api } from '@/lib/axios'
+import { useRouter } from 'next/router'
 
 const updateProfileSchema = z.object({
   bio: z.string(),
@@ -26,19 +35,21 @@ export default function UpdateProfile() {
   })
 
   const session = useSession()
+  const router = useRouter()
 
-  console.log(session)
+  async function handleUpdateProfile(data: UpdateProfileData) {
+    await api.put('/users/profile', {
+      bio: data.bio,
+    })
 
-  async function handleUpdateProfile(data: UpdateProfileData) {}
+    await router.push(`/schedule/${session.data?.user.username}`)
+  }
 
   return (
     <Container>
       <Header>
-        <Heading as="strong">Bem-vindo ao Ignite Call!</Heading>
-        <Text>
-          Precisamos de algumas informações para criar seu perfil! Ah, você pode
-          editar essas informações depois.
-        </Text>
+        <Heading as="strong">Defina sua disponibilidade</Heading>
+        <Text>Por último, uma breve descrição e uma foto de perfil.</Text>
 
         <MultiStep size={4} currentStep={4} />
       </Header>
@@ -46,6 +57,10 @@ export default function UpdateProfile() {
       <ProfileBox as="form" onSubmit={handleSubmit(handleUpdateProfile)}>
         <label>
           <Text size="sm">Foto de perfil</Text>
+          <Avatar
+            src={session.data?.user.avatar_url}
+            alt={session.data?.user.name}
+          />
         </label>
 
         <label>
@@ -58,7 +73,6 @@ export default function UpdateProfile() {
 
         <Button type="submit" disabled={isSubmitting}>
           Finalizar
-          <ArrowArcRight />
         </Button>
       </ProfileBox>
     </Container>
