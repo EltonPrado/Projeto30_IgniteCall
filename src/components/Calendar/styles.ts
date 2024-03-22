@@ -15,6 +15,7 @@ export const CalendarHeader = styled('div', {
 
 export const CalendarTitle = styled(Text, {
   fontWeight: 'medium',
+  textTransform: 'capitalize',
 
   span: {
     color: '$gray200',
@@ -28,7 +29,6 @@ export const CalendarActions = styled('div', {
 
   button: {
     all: 'unset',
-    // pega todas as propriedades do css e tira o valor padrão
     cursor: 'pointer',
     lineHeight: 0,
     borderRadius: '$sm',
